@@ -1,0 +1,150 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">AYU-LINK emergency handoff workflow</title>
+  <desc id="desc">A four-stage presentation diagram showing RFID patient identification, emergency case creation, secure ambulance voice handoff, hospital response, and real-time status feedback.</desc>
+  <defs>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#102438"/>
+      <stop offset="1" stop-color="#193c50"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#173149" flood-opacity=".08"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0 10 5 0 10Z" fill="#148b91"/>
+    </marker>
+    <marker id="smallArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0 0 8 4 0 8Z" fill="#8298a7"/>
+    </marker>
+    <style>
+      text { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+      .title { fill:#fff; font-weight:750; font-size:38px; letter-spacing:-.7px; }
+      .subtitle { fill:#c6d6df; font-size:17px; }
+      .eyebrow { fill:#72d3cb; font-size:12px; font-weight:750; letter-spacing:2px; }
+      .step { fill:#148b91; font-size:12px; font-weight:750; letter-spacing:1.4px; }
+      .cardtitle { fill:#102438; font-size:21px; font-weight:740; letter-spacing:-.3px; }
+      .label { fill:#1b3446; font-size:14px; font-weight:700; }
+      .body { fill:#526675; font-size:13px; }
+      .tiny { fill:#748694; font-size:11px; }
+      .tag { fill:#e7f4f3; }
+      .tagtext { fill:#24686d; font-size:11px; font-weight:700; }
+      .footerhead { fill:#c3d6df; font-size:11px; font-weight:750; letter-spacing:1.4px; }
+      .footertext { fill:#fff; font-size:13px; font-weight:600; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f3f6f8"/>
+  <rect width="1600" height="176" fill="url(#header)"/>
+  <circle cx="1510" cy="12" r="152" fill="#fff" opacity=".035"/>
+  <circle cx="1435" cy="130" r="85" fill="#69d0c6" opacity=".07"/>
+  <text x="64" y="46" class="eyebrow">AYU-LINK  /  EMERGENCY COORDINATION</text>
+  <text x="64" y="100" class="title">From patient scan to hospital-ready handoff</text>
+  <text x="64" y="136" class="subtitle">A secure, role-based communication loop between ambulance crews and the receiving hospital.</text>
+  <rect x="1342" y="48" width="194" height="36" rx="18" fill="#244758" stroke="#477080"/>
+  <circle cx="1362" cy="66" r="5" fill="#77d4c6"/>
+  <text x="1375" y="71" fill="#d5e5ea" font-size="12" font-weight="700" letter-spacing=".8">PRESENTATION PROTOTYPE</text>
+
+  <g filter="url(#shadow)">
+    <rect x="64" y="210" width="340" height="422" rx="18" fill="#fff"/>
+    <rect x="64" y="210" width="340" height="7" rx="4" fill="#17979a"/>
+    <rect x="442" y="210" width="340" height="422" rx="18" fill="#fff"/>
+    <rect x="442" y="210" width="340" height="7" rx="4" fill="#4a78a8"/>
+    <rect x="820" y="210" width="340" height="422" rx="18" fill="#fff"/>
+    <rect x="820" y="210" width="340" height="7" rx="4" fill="#d28b43"/>
+    <rect x="1198" y="210" width="340" height="422" rx="18" fill="#fff"/>
+    <rect x="1198" y="210" width="340" height="7" rx="4" fill="#6a75b5"/>
+  </g>
+
+  <text x="90" y="254" class="step">01  /  IDENTIFY</text>
+  <text x="90" y="288" class="cardtitle">Scan the patient</text>
+  <circle cx="105" cy="333" r="18" fill="#e7f4f3"/>
+  <path d="M96 334q9-9 18 0M99 338q6-6 12 0M104 342h2" fill="none" stroke="#148b91" stroke-width="2" stroke-linecap="round"/>
+  <text x="136" y="330" class="label">RFID card UID</text>
+  <text x="136" y="350" class="body">ESP32 + MFRC522 scanner</text>
+  <rect x="90" y="376" width="278" height="1" fill="#e6edf0"/>
+  <rect x="90" y="394" width="120" height="24" rx="12" class="tag"/>
+  <text x="104" y="410" class="tagtext">OR DEMO SCAN</text>
+  <text x="90" y="448" class="label">Mobile ambulance dashboard</text>
+  <text x="90" y="472" class="body">Driver or authorized staff signs in.</text>
+  <text x="90" y="495" class="body">Only the card UID is read — not</text>
+  <text x="90" y="514" class="body">medical data stored on the card.</text>
+  <rect x="90" y="546" width="278" height="58" rx="11" fill="#f0f7f7"/>
+  <text x="106" y="570" class="label">Authenticated scan</text>
+  <text x="106" y="590" class="tiny">Device key for hardware · demo mode in dev/test</text>
+
+  <text x="468" y="254" class="step" fill="#4a78a8">02  /  MATCH + OPEN</text>
+  <text x="468" y="288" class="cardtitle">Identify &amp; create case</text>
+  <circle cx="483" cy="333" r="18" fill="#edf2f8"/>
+  <circle cx="481" cy="331" r="6" fill="none" stroke="#4a78a8" stroke-width="2"/>
+  <path d="m486 336 6 6" stroke="#4a78a8" stroke-width="2" stroke-linecap="round"/>
+  <text x="514" y="330" class="label">FastAPI resolves UID</text>
+  <text x="514" y="350" class="body">UID → patient + latest record</text>
+  <rect x="468" y="376" width="278" height="1" fill="#e6edf0"/>
+  <text x="468" y="411" class="label">Authorized patient summary</text>
+  <text x="468" y="436" class="body">Name, age, blood group, allergies,</text>
+  <text x="468" y="455" class="body">conditions and available history</text>
+  <text x="468" y="492" class="label">Emergency case</text>
+  <text x="468" y="516" class="body">Create or reopen active case; link</text>
+  <text x="468" y="535" class="body">ambulance and selected hospital.</text>
+  <rect x="468" y="558" width="278" height="46" rx="11" fill="#eff3f8"/>
+  <text x="484" y="579" class="label">Case status + priority</text>
+  <text x="484" y="596" class="tiny">Shared only with authorized case participants</text>
+
+  <text x="846" y="254" class="step" fill="#b8732f">03  /  SEND HANDOFF</text>
+  <text x="846" y="288" class="cardtitle">Record &amp; send</text>
+  <circle cx="861" cy="333" r="18" fill="#fbf1e5"/>
+  <rect x="857" y="324" width="8" height="17" rx="4" fill="none" stroke="#bf7938" stroke-width="2"/>
+  <path d="M853 334q0 11 8 11t8-11m-8 11v5m-5 0h10" fill="none" stroke="#bf7938" stroke-width="2" stroke-linecap="round"/>
+  <text x="892" y="330" class="label">Browser microphone</text>
+  <text x="892" y="350" class="body">Permission → record → preview</text>
+  <rect x="846" y="376" width="278" height="1" fill="#e6edf0"/>
+  <text x="846" y="411" class="label">Crew chooses the handoff</text>
+  <text x="846" y="436" class="body">Voice note or text update, sent to</text>
+  <text x="846" y="455" class="body">the selected receiving hospital.</text>
+  <text x="846" y="492" class="label">Backend validates and stores</text>
+  <text x="846" y="516" class="body">Audio checks → private file storage</text>
+  <text x="846" y="535" class="body">Message + timestamp → SQLite</text>
+  <rect x="846" y="558" width="278" height="46" rx="11" fill="#fbf4eb"/>
+  <text x="862" y="579" class="label">Socket.IO sends live event</text>
+  <text x="862" y="596" class="tiny">Room-scoped to case / assigned hospital</text>
+
+  <text x="1224" y="254" class="step" fill="#606ca6">04  /  RESPOND</text>
+  <text x="1224" y="288" class="cardtitle">Hospital acts</text>
+  <circle cx="1239" cy="333" r="18" fill="#eff0fa"/>
+  <path d="M1230 342v-14h18v14m-22 0h26m-17-14v6h6v-6" fill="none" stroke="#626eaa" stroke-width="2" stroke-linejoin="round"/>
+  <text x="1270" y="330" class="label">Assigned hospital staff</text>
+  <text x="1270" y="350" class="body">Dashboard receives case update</text>
+  <rect x="1224" y="376" width="278" height="1" fill="#e6edf0"/>
+  <text x="1224" y="411" class="label">Review the incoming handoff</text>
+  <text x="1224" y="436" class="body">View patient + emergency details;</text>
+  <text x="1224" y="455" class="body">play, pause and replay voice notes.</text>
+  <text x="1224" y="492" class="label">Respond to the ambulance</text>
+  <text x="1224" y="516" class="body">Reply · acknowledge · update</text>
+  <text x="1224" y="535" class="body">emergency preparation status.</text>
+  <rect x="1224" y="558" width="278" height="46" rx="11" fill="#f0f1fa"/>
+  <text x="1240" y="579" class="label">Status returns live</text>
+  <text x="1240" y="596" class="tiny">Ambulance sees acknowledgement + reply</text>
+
+  <path d="M408 420h26" fill="none" stroke="#8298a7" stroke-width="2.5" marker-end="url(#smallArrow)"/>
+  <path d="M786 420h26" fill="none" stroke="#8298a7" stroke-width="2.5" marker-end="url(#smallArrow)"/>
+  <path d="M1164 420h26" fill="none" stroke="#8298a7" stroke-width="2.5" marker-end="url(#smallArrow)"/>
+
+  <path d="M1370 641v52H230v-48" fill="none" stroke="#148b91" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)"/>
+  <rect x="528" y="675" width="544" height="34" rx="17" fill="#e6f4f3" stroke="#c3e3e1"/>
+  <text x="800" y="697" text-anchor="middle" fill="#20686d" font-size="12" font-weight="750">ACKNOWLEDGEMENT · HOSPITAL REPLY · PREPARATION STATUS  →  AMBULANCE</text>
+
+  <rect x="64" y="735" width="1472" height="104" rx="15" fill="#102438"/>
+  <text x="92" y="765" class="footerhead">UNDER THE HOOD</text>
+  <line x1="330" y1="756" x2="330" y2="818" stroke="#365064"/>
+  <line x1="720" y1="756" x2="720" y2="818" stroke="#365064"/>
+  <line x1="1115" y1="756" x2="1115" y2="818" stroke="#365064"/>
+  <text x="92" y="796" class="footertext">React dashboard</text>
+  <text x="92" y="817" fill="#a8bdc9" font-size="11">mobile-first · role-specific</text>
+  <text x="358" y="776" class="footerhead">API + ACCESS</text>
+  <text x="358" y="800" class="footertext">FastAPI REST · JWT · case permissions</text>
+  <text x="748" y="776" class="footerhead">LIVE UPDATES</text>
+  <text x="748" y="800" class="footertext">Socket.IO · authorized rooms</text>
+  <text x="1143" y="776" class="footerhead">DATA</text>
+  <text x="1143" y="800" class="footertext">SQLite + private audio storage</text>
+  <text x="64" y="873" fill="#718391" font-size="12">Presentation prototype only · Not clinically validated or production-ready · Doctors have read-only case access</text>
+  <text x="1536" y="873" text-anchor="end" fill="#718391" font-size="12">AYU-LINK</text>
+</svg>
