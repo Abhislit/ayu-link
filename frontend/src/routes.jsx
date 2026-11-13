@@ -9,7 +9,7 @@ import Login from './pages/Login'
 import { ADMIN_ROLES, AMBULANCE_ROLES, DOCTOR_ROLES, HOSPITAL_ROLES, HOME } from './roleRoutes'
 
 function Loading({ label = 'Loading…' }) {
-  return <div className="grid min-h-screen place-items-center text-slate-500">{label}</div>
+  return <div className="grid min-h-screen place-items-center text-[var(--text-muted)]">{label}</div>
 }
 
 function RequireAuth() {

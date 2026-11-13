@@ -7,6 +7,7 @@ import { CaseProgress, CaseStatus, EmptyCase, PatientOverview } from '../compone
 import Icon from '../components/Icons'
 import { ErrorNotice, LiveStatus } from '../components/StatusPill'
 import useRealtime from '../hooks/useRealtime'
+import { useStripAdvance } from '../hooks/useStripAdvance'
 
 export default function Doctor() {
   const { user } = useAuth()
@@ -64,17 +65,22 @@ export default function Doctor() {
 
   const selectedDetail =
     String(detail?.case?.id) === String(selectedId) ? detail : null
+  const advancing = useStripAdvance(selectedDetail?.case?.status)
 
   return (
     <div className="space-y-6">
-      <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+      <header className="border-b border-[var(--board-line)] pb-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary-ink)]">Clinical view</p>
-            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Case overview</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">Read-only view of active emergency cases assigned to your hospital.</p>
+            <h1 className="display text-4xl tracking-[0.08em] text-[var(--text)] sm:text-5xl">Case overview</h1>
+            <p className="mt-2 max-w-2xl text-[13px] leading-6 text-[var(--text-muted)]">
+              Read-only view of active emergency cases assigned to your hospital.
+            </p>
           </div>
-          <LiveStatus connected={connected} />
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="chrome-label m-0">Clinical view</p>
+            <LiveStatus connected={connected} />
+          </div>
         </div>
       </header>
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
@@ -92,25 +98,49 @@ export default function Doctor() {
 
         {detailLoading ? (
           <div className="space-y-4" aria-label="Loading selected case">
-            <div className="h-40 animate-pulse rounded-2xl bg-slate-200" />
-            <div className="h-80 animate-pulse rounded-2xl bg-slate-200" />
+            <div className="skeleton h-40" />
+            <div className="skeleton h-80" />
           </div>
         ) : selectedDetail ? (
           <div className="space-y-4">
-            <section className="rounded-2xl bg-white p-4 ring-1 ring-inset ring-slate-200 sm:p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <h2 className="text-lg font-bold text-slate-950">Case #{selectedDetail.case.id}</h2>
-                  <p className="mt-1 text-sm text-slate-600">{selectedDetail.ambulance?.vehicle_number} · {new Date(selectedDetail.case.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
+            <section className={`strip overflow-hidden ${advancing ? 'strip-advance' : ''}`}>
+              <span className="strip-perf" aria-hidden="true" />
+              <div className="strip-head">
+                <div className="flex items-center gap-2">
+                  <span className="paper-label">Case</span>
+                  <span className="font-mono text-[12px] font-semibold text-[var(--ink)]">#{selectedDetail.case.id}</span>
+                  <span className="text-[var(--perf)]">·</span>
+                  <span className="paper-label">{selectedDetail.ambulance?.vehicle_number}</span>
                 </div>
-                <Icon name="shield" className="h-6 w-6 text-slate-500" />
+                <div className="flex items-center gap-2 text-[var(--paper-muted)]">
+                  <span className="st">
+                    {new Date(selectedDetail.case.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                  </span>
+                  <Icon name="shield" className="h-4 w-4" />
+                </div>
               </div>
-              <div className="mt-4"><CaseProgress detail={selectedDetail} /></div>
-              <div className="mt-3"><CaseStatus detail={selectedDetail} /></div>
+              <div className="strip-body space-y-3">
+                <h2 className="display text-[30px] leading-none text-[var(--ink)]">{selectedDetail.patient.name}</h2>
+                <p className="mt-1.5 text-[12px] text-[var(--paper-muted)]">
+                  {selectedDetail.patient.age} years · {selectedDetail.patient.sex} · {selectedDetail.patient.blood_group}
+                </p>
+                <CaseStatus detail={selectedDetail} />
+                <div className="border-t border-[var(--paper-line)] pt-3">
+                  <CaseProgress detail={selectedDetail} />
+                </div>
+              </div>
+              <div className="stamp py-2 pl-4 pr-4 sm:pl-[58px] sm:pr-[30px]">
+                <p className="stamp-line">
+                  Handoff state · {selectedDetail.case.status?.replaceAll('_', ' ')} · prep{' '}
+                  {selectedDetail.case.prep_status?.replaceAll('_', ' ') ?? 'pending'}
+                </p>
+              </div>
             </section>
             <PatientOverview detail={selectedDetail} />
             <CaseMessages caseId={selectedDetail.case.id} user={user} canReply={false} />
-            <p className="rounded-xl bg-slate-100 px-4 py-3 text-xs leading-5 text-slate-700">This role can review information and listen to case communications. Only hospital staff can acknowledge or update preparation status.</p>
+            <p className="border border-[var(--paper-line)] bg-[var(--paper-band)] px-3 py-2 text-[12px] leading-5 text-[var(--paper-muted)]">
+              This role can review information and listen to case communications. Only hospital staff can acknowledge or update preparation status.
+            </p>
           </div>
         ) : (
           <EmptyCase

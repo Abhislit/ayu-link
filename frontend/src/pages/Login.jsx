@@ -42,59 +42,80 @@ export default function Login() {
   }
 
   return (
-    <div className="grid min-h-screen place-items-center px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--primary-ink)]">AYU-LINK</h1>
-        <p className="mt-1 text-sm text-slate-500">Emergency ambulance coordination</p>
-
-        <form onSubmit={submit} className="mt-6 space-y-4">
-          <label className="block text-sm font-medium text-slate-700">
-            Email
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[#ccfbf1]"
-            />
-          </label>
-          <label className="block text-sm font-medium text-slate-700">
-            Password
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[#ccfbf1]"
-            />
-          </label>
-
-          {error && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={busy}
-            className="primary-button w-full rounded-lg px-3 py-2 text-sm font-semibold disabled:opacity-60"
-          >
-            {busy ? 'Signing in…' : 'Sign in'}
-          </button>
-        </form>
-
-        <div className="mt-6 border-t border-slate-200 pt-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Demo accounts</p>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            {DEMO.map((demo) => (
-              <button
-                key={demo.email}
-                type="button"
-                onClick={() => fill(demo)}
-                className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
-              >
-                {demo.label}
-              </button>
-            ))}
+    <div className="grid min-h-screen place-items-center px-4 py-10">
+      <div className="w-full max-w-md">
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <h1 className="display text-4xl text-[var(--text)] tracking-[0.12em] whitespace-nowrap">AYU-LINK</h1>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="chrome-label m-0">Emergency coordination</p>
+            <span className="st text-[var(--live)]">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[var(--live)]" />
+              Secure
+            </span>
           </div>
-          <p className="mt-2 text-xs text-slate-400">Password: {DEMO_PASSWORD}</p>
+        </div>
+
+        <div className="strip">
+          <span aria-hidden="true" className="strip-perf" />
+          <div className="strip-body">
+            <div className="flex items-baseline justify-between">
+              <p className="paper-label">Access slip</p>
+              <span className="paper-label">Form 01</span>
+            </div>
+            <p className="mt-1 text-[12px] text-[var(--paper-muted)]">Sign in to open the board.</p>
+
+            <form onSubmit={submit} className="mt-5 space-y-4">
+              <label className="block">
+                <span className="paper-label">Email</span>
+                <input
+                  type="email"
+                  required
+                  autoComplete="username"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="field mt-1"
+                />
+              </label>
+              <label className="block">
+                <span className="paper-label">Password</span>
+                <input
+                  type="password"
+                  required
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="field mt-1"
+                />
+              </label>
+
+              {error ? (
+                <p role="alert" className="notice notice-alarm">
+                  {error}
+                </p>
+              ) : null}
+
+              <button type="submit" disabled={busy} className="btn-ink w-full">
+                {busy ? 'Signing in…' : 'Sign in'}
+              </button>
+            </form>
+
+            <div className="mt-5 border-t border-[var(--paper-line)] pt-4">
+              <p className="paper-label">Demo accounts</p>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {DEMO.map((demo) => (
+                  <button
+                    key={demo.email}
+                    type="button"
+                    onClick={() => fill(demo)}
+                    className="border border-[var(--paper-line)] bg-[var(--paper)] px-3 py-1.5 text-[10px] font-semibold tracking-[0.12em] text-[var(--ink)] uppercase transition-colors hover:bg-[var(--paper-band)]"
+                  >
+                    {demo.label}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-2 text-[11px] text-[var(--paper-muted)]">Password: {DEMO_PASSWORD}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

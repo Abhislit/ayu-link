@@ -6,6 +6,7 @@ import CaseQueue from '../components/CaseQueue'
 import { CaseProgress, CaseStatus, EmptyCase, PatientOverview } from '../components/CaseOverview'
 import { ErrorNotice, LiveStatus } from '../components/StatusPill'
 import useRealtime from '../hooks/useRealtime'
+import { useStripAdvance } from '../hooks/useStripAdvance'
 
 export default function Hospital() {
   const { user } = useAuth()
@@ -66,6 +67,7 @@ export default function Hospital() {
 
   const selectedDetail =
     String(detail?.case?.id) === String(selectedId) ? detail : null
+  const advancing = useStripAdvance(selectedDetail?.case?.status)
 
   async function acknowledge() {
     if (!selectedId || saving) return
@@ -103,19 +105,23 @@ export default function Hospital() {
 
   return (
     <div className="space-y-6">
-      <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+      <header className="border-b border-[var(--board-line)] pb-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--primary-ink)]">Hospital desk</p>
-            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Emergency coordination</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">Receive ambulance handoffs and coordinate emergency preparation.</p>
+            <h1 className="display text-4xl tracking-[0.08em] text-[var(--text)] sm:text-5xl">Emergency coordination</h1>
+            <p className="mt-2 max-w-2xl text-[13px] leading-6 text-[var(--text-muted)]">
+              Receive ambulance handoffs and coordinate emergency preparation.
+            </p>
           </div>
-          <LiveStatus connected={connected} />
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="chrome-label m-0">Hospital desk</p>
+            <LiveStatus connected={connected} />
+          </div>
         </div>
       </header>
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
       {notice ? (
-        <div role="status" className="notice-banner rounded-2xl px-4 py-3 text-sm font-medium text-emerald-900">
+        <div role="status" className="notice">
           {notice}
         </div>
       ) : null}
@@ -132,37 +138,53 @@ export default function Hospital() {
 
         {detailLoading ? (
           <div className="space-y-4" aria-label="Loading selected case">
-            <div className="h-40 animate-pulse rounded-2xl bg-slate-200" />
-            <div className="h-80 animate-pulse rounded-2xl bg-slate-200" />
+            <div className="skeleton h-40" />
+            <div className="skeleton h-80" />
           </div>
         ) : selectedDetail ? (
           <div className="space-y-4">
-            <section className="rounded-2xl bg-white p-4 ring-1 ring-inset ring-slate-200 sm:p-5">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-bold text-slate-950">Case #{selectedDetail.case.id} · {selectedDetail.ambulance?.vehicle_number}</h2>
-                  <p className="mt-1 text-sm text-slate-600">Opened {new Date(selectedDetail.case.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
-                  <div className="mt-4"><CaseProgress detail={selectedDetail} /></div>
-                  <div className="mt-3"><CaseStatus detail={selectedDetail} /></div>
+            <section className={`strip overflow-hidden ${advancing ? 'strip-advance' : ''}`}>
+              <span className="strip-perf" aria-hidden="true" />
+              <div className="strip-head">
+                <div className="flex items-center gap-2">
+                  <span className="paper-label">Case</span>
+                  <span className="font-mono text-[12px] font-semibold text-[var(--ink)]">#{selectedDetail.case.id}</span>
+                  <span className="text-[var(--perf)]">·</span>
+                  <span className="paper-label">{selectedDetail.ambulance?.vehicle_number}</span>
                 </div>
-                <button
-                  type="button"
-                  onClick={acknowledge}
-                  disabled={saving || selectedDetail.case.status === 'acknowledged'}
-                  className="min-h-12 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {selectedDetail.case.status === 'acknowledged' ? 'Acknowledged' : saving ? 'Saving…' : 'Acknowledge emergency'}
-                </button>
+                <span className="st text-[var(--paper-muted)]">
+                  {new Date(selectedDetail.case.created_at).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                </span>
               </div>
-              <div className="mt-5 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="prep-status" className="text-sm font-semibold text-slate-800">Emergency preparation</label>
+              <div className="strip-body space-y-3">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="display text-[30px] leading-none text-[var(--ink)]">{selectedDetail.patient.name}</h2>
+                    <p className="mt-1.5 text-[12px] text-[var(--paper-muted)]">
+                      {selectedDetail.patient.age} years · {selectedDetail.patient.sex} · {selectedDetail.patient.blood_group}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={acknowledge}
+                    disabled={saving || selectedDetail.case.status === 'acknowledged'}
+                    className="btn-ink btn-alarm min-h-12 px-4"
+                  >
+                    {selectedDetail.case.status === 'acknowledged' ? 'Acknowledged' : saving ? 'Saving…' : 'Acknowledge emergency'}
+                  </button>
+                </div>
+                <CaseStatus detail={selectedDetail} />
+                <div className="border-t border-[var(--paper-line)] pt-3">
+                  <CaseProgress detail={selectedDetail} />
+                </div>
+                <div className="border-t border-[var(--paper-line)] pt-3">
+                  <label htmlFor="prep-status" className="paper-label">Emergency preparation</label>
                   <select
                     id="prep-status"
                     value={selectedDetail.case.prep_status}
                     onChange={updatePrepStatus}
                     disabled={saving}
-                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[#ccfbf1] disabled:opacity-60"
+                    className="field mt-2 block min-h-11 w-full sm:max-w-xs"
                   >
                     <option value="pending">Pending</option>
                     <option value="requested">Requested</option>
@@ -170,11 +192,12 @@ export default function Hospital() {
                     <option value="ready">Ready</option>
                   </select>
                 </div>
-                <div className="rounded-xl bg-slate-50 p-3">
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-600">Case handoff status</p>
-                  <p className="mt-1 text-sm font-semibold capitalize text-slate-950">{selectedDetail.case.status.replaceAll('_', ' ')}</p>
-                  <p className="mt-1 text-xs text-slate-600">Ambulance movement: <span className="font-semibold capitalize">{selectedDetail.case.ambulance_status?.replaceAll('_', ' ') ?? 'status unavailable'}</span></p>
-                </div>
+              </div>
+              <div className="stamp py-2 pl-4 pr-4 sm:pl-[58px] sm:pr-[30px]">
+                <p className="stamp-line">
+                  Handoff state · {selectedDetail.case.status?.replaceAll('_', ' ')} · prep{' '}
+                  {selectedDetail.case.prep_status?.replaceAll('_', ' ') ?? 'pending'}
+                </p>
               </div>
             </section>
             <PatientOverview detail={selectedDetail} />

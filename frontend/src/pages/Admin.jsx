@@ -49,28 +49,30 @@ export default function Admin() {
 
   return (
     <div className="space-y-6">
-      <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+      <header className="border-b border-[var(--board-line)] pb-5">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary-ink)]">Administration</p>
-            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Platform overview</h1>
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">View demo directory and platform totals. Clinical records are not shown here.</p>
+            <h1 className="display text-4xl tracking-[0.08em] text-[var(--text)] sm:text-5xl">Platform overview</h1>
+            <p className="mt-2 max-w-2xl text-[13px] leading-6 text-[var(--text-muted)]">View demo directory and platform totals. Clinical records are not shown here.</p>
           </div>
-          <button
-            type="button"
-            onClick={load}
-            disabled={loading}
-            className="primary-button inline-flex min-h-10 items-center justify-center rounded-full px-4 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? 'Refreshing…' : 'Refresh'}
-          </button>
+          <div className="flex flex-col items-start gap-2 sm:items-end">
+            <p className="chrome-label m-0">Administration</p>
+            <button
+              type="button"
+              onClick={load}
+              disabled={loading}
+              className="btn-ghost"
+            >
+              {loading ? 'Refreshing…' : 'Refresh'}
+            </button>
+          </div>
         </div>
       </header>
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
 
       {loading && !overview ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5" aria-label="Loading overview">
-          {SECTIONS.map((section) => <div key={section.key} className="h-24 animate-pulse rounded-2xl bg-slate-200" />)}
+          {SECTIONS.map((section) => <div key={section.key} className="skeleton h-24" />)}
         </div>
       ) : overview ? (
         <section aria-label="Platform totals" className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
@@ -81,17 +83,17 @@ export default function Admin() {
             ['Patients', overview.patients],
             ['Emergency cases', overview.cases],
           ].map(([label, count]) => (
-            <div key={label} className="metric-card rounded-[24px] px-4 py-4">
-              <p className="text-sm font-medium text-slate-600">{label}</p>
-              <p className="mt-2 text-2xl font-black tabular-nums text-slate-950">{count}</p>
+            <div key={label} className="border border-[var(--paper-line)] bg-[var(--paper)] px-4 py-4">
+              <p className="paper-label">{label}</p>
+              <p className="display mt-2 text-[28px] tabular-nums text-[var(--ink)]">{count}</p>
             </div>
           ))}
         </section>
       ) : null}
 
-      <section className="dashboard-panel table-shell overflow-hidden rounded-[28px]">
-        <div className="border-b border-slate-200/80 bg-slate-50/80 px-4 pt-4 sm:px-5">
-          <h2 className="text-base font-bold text-slate-950">Directory</h2>
+      <section className="border border-[var(--paper-line)] bg-[var(--paper)]">
+        <div className="border-b border-[var(--paper-line)] px-4 pt-4 sm:px-5">
+          <h2 className="display text-[19px] text-[var(--ink)]">Directory</h2>
           <div className="mt-3 flex gap-1 overflow-x-auto" role="tablist" aria-label="Admin directories">
             {SECTIONS.map((section) => (
               <button
@@ -100,8 +102,8 @@ export default function Admin() {
                 role="tab"
                 aria-selected={activeSection === section.key}
                 onClick={() => setActiveSection(section.key)}
-                className={`shrink-0 rounded-t-xl px-3 py-2 text-sm font-semibold capitalize transition-colors ${
-                  activeSection === section.key ? 'bg-[var(--primary-soft)] text-[var(--primary-ink)] ring-1 ring-inset ring-[#99f6e4]' : 'text-slate-600 hover:bg-slate-100'
+                className={`shrink-0 px-3 py-2 text-[10px] font-semibold tracking-[0.14em] uppercase transition-colors ${
+                  activeSection === section.key ? 'bg-[var(--paper-band)] text-[var(--ink)] shadow-[inset_0_-2px_0_var(--alarm)]' : 'text-[var(--paper-muted)] hover:bg-[var(--paper-band)]'
                 }`}
               >
                 {section.label}
@@ -110,29 +112,29 @@ export default function Admin() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[36rem] border-collapse text-left text-sm">
-            <thead className="bg-slate-50 text-xs font-bold uppercase tracking-wide text-slate-600">
+          <table className="ledger min-w-[36rem] text-left">
+            <thead>
               <tr>
-                <th scope="col" className="px-4 py-3 sm:px-5">ID</th>
-                {active.columns.map(([, label]) => <th key={label} scope="col" className="px-4 py-3 sm:px-5">{label}</th>)}
+                <th scope="col">ID</th>
+                {active.columns.map(([, label]) => <th key={label} scope="col">{label}</th>)}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="text-slate-800">
-                  <td className="px-4 py-3 font-semibold tabular-nums text-slate-700 sm:px-5">{row.id}</td>
+                <tr key={row.id} className="text-[var(--ink)]">
+                  <td className="font-semibold tabular-nums">{row.id}</td>
                   {active.columns.map(([key]) => (
-                    <td key={key} className={`px-4 py-3 sm:px-5 ${key === 'role' || key === 'sex' ? 'capitalize' : ''}`}>{valueFor(row, key)}</td>
+                    <td key={key} className={key === 'role' || key === 'sex' ? 'capitalize' : ''}>{valueFor(row, key)}</td>
                   ))}
                 </tr>
               ))}
               {!loading && rows.length === 0 ? (
-                <tr><td colSpan={active.columns.length + 1} className="px-4 py-8 text-center text-slate-600">No {active.label.toLowerCase()} found.</td></tr>
+                <tr><td colSpan={active.columns.length + 1} className="py-8 text-center text-[var(--paper-muted)]">No {active.label.toLowerCase()} found.</td></tr>
               ) : null}
             </tbody>
           </table>
         </div>
-        <p className="border-t border-slate-200 px-4 py-3 text-xs text-slate-600 sm:px-5">Prototype directories are read-only. Add or edit records through an authorized administrative workflow before production use.</p>
+        <p className="border-t border-[var(--paper-line)] px-4 py-3 text-[11px] text-[var(--paper-muted)] sm:px-5">Prototype directories are read-only. Add or edit records through an authorized administrative workflow before production use.</p>
       </section>
     </div>
   )
