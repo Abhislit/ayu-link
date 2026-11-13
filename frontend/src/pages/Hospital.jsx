@@ -9,13 +9,13 @@ import useRealtime from '../hooks/useRealtime'
 
 function CaseQueue({ cases, selectedId, onSelect, loading }) {
   return (
-    <section className="overflow-hidden rounded-2xl bg-white ring-1 ring-inset ring-slate-200">
-      <header className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
+    <section className="dashboard-panel overflow-hidden rounded-[28px] bg-white/90">
+      <header className="flex items-center justify-between border-b border-slate-200/80 bg-slate-50/80 px-4 py-4">
         <div>
           <h2 className="font-bold text-slate-950">Incoming cases</h2>
           <p className="mt-1 text-xs text-slate-600">Assigned to your hospital</p>
         </div>
-        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold tabular-nums text-slate-700">{cases.length}</span>
+        <span className="rounded-full bg-slate-900 px-2.5 py-1 text-xs font-bold tabular-nums text-white">{cases.length}</span>
       </header>
       <div className="max-h-[34rem] divide-y divide-slate-100 overflow-y-auto">
         {loading ? (
@@ -30,8 +30,8 @@ function CaseQueue({ cases, selectedId, onSelect, loading }) {
               key={item.id}
               onClick={() => onSelect(item.id)}
               aria-current={String(selectedId) === String(item.id) ? 'true' : undefined}
-              className={`w-full px-4 py-4 text-left transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-red-600 ${
-                String(selectedId) === String(item.id) ? 'bg-red-50/70' : ''
+              className={`queue-item w-full border border-transparent px-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-red-600 ${
+                String(selectedId) === String(item.id) ? 'bg-red-50/70' : 'bg-white/40'
               }`}
             >
               <span className="flex items-start justify-between gap-2">
@@ -154,17 +154,20 @@ export default function Hospital() {
   }
 
   return (
-    <div className="space-y-5">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Hospital emergency desk</h1>
-          <p className="mt-1 text-sm text-slate-600">Receive ambulance handoffs and coordinate emergency preparation.</p>
+    <div className="space-y-6">
+      <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-red-700">Hospital desk</p>
+            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Emergency coordination</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600">Receive ambulance handoffs and coordinate emergency preparation.</p>
+          </div>
+          <LiveStatus connected={connected} />
         </div>
-        <LiveStatus connected={connected} />
       </header>
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
       {notice ? (
-        <div role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900 ring-1 ring-inset ring-emerald-200">
+        <div role="status" className="notice-banner rounded-2xl px-4 py-3 text-sm font-medium text-emerald-900">
           {notice}
         </div>
       ) : null}

@@ -48,20 +48,23 @@ export default function Admin() {
   const rows = directories[active.key] ?? []
 
   return (
-    <div className="space-y-5">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Platform administration</h1>
-          <p className="mt-1 text-sm text-slate-600">View demo directory and platform totals. Clinical records are not shown here.</p>
+    <div className="space-y-6">
+      <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-700">Administration</p>
+            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Platform overview</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600">View demo directory and platform totals. Clinical records are not shown here.</p>
+          </div>
+          <button
+            type="button"
+            onClick={load}
+            disabled={loading}
+            className="primary-button inline-flex min-h-10 items-center justify-center rounded-full px-4 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loading ? 'Refreshing…' : 'Refresh'}
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={load}
-          disabled={loading}
-          className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {loading ? 'Refreshing…' : 'Refresh'}
-        </button>
       </header>
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
 
@@ -78,16 +81,16 @@ export default function Admin() {
             ['Patients', overview.patients],
             ['Emergency cases', overview.cases],
           ].map(([label, count]) => (
-            <div key={label} className="rounded-2xl bg-white px-4 py-4 ring-1 ring-inset ring-slate-200">
+            <div key={label} className="metric-card rounded-[24px] px-4 py-4">
               <p className="text-sm font-medium text-slate-600">{label}</p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-slate-950">{count}</p>
+              <p className="mt-2 text-2xl font-black tabular-nums text-slate-950">{count}</p>
             </div>
           ))}
         </section>
       ) : null}
 
-      <section className="overflow-hidden rounded-2xl bg-white ring-1 ring-inset ring-slate-200">
-        <div className="border-b border-slate-200 px-4 pt-4 sm:px-5">
+      <section className="dashboard-panel table-shell overflow-hidden rounded-[28px]">
+        <div className="border-b border-slate-200/80 bg-slate-50/80 px-4 pt-4 sm:px-5">
           <h2 className="text-base font-bold text-slate-950">Directory</h2>
           <div className="mt-3 flex gap-1 overflow-x-auto" role="tablist" aria-label="Admin directories">
             {SECTIONS.map((section) => (
@@ -97,8 +100,8 @@ export default function Admin() {
                 role="tab"
                 aria-selected={activeSection === section.key}
                 onClick={() => setActiveSection(section.key)}
-                className={`shrink-0 rounded-t-lg px-3 py-2 text-sm font-semibold capitalize transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-600 ${
-                  activeSection === section.key ? 'bg-red-50 text-red-800' : 'text-slate-600 hover:bg-slate-100'
+                className={`shrink-0 rounded-t-xl px-3 py-2 text-sm font-semibold capitalize transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-600 ${
+                  activeSection === section.key ? 'bg-red-50 text-red-800 ring-1 ring-inset ring-red-200' : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 {section.label}

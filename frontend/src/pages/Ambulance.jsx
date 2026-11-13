@@ -9,12 +9,15 @@ import useRealtime from '../hooks/useRealtime'
 
 function PageHeader({ connected }) {
   return (
-    <header className="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Ambulance response</h1>
-        <p className="mt-1 text-sm text-slate-600">Identify the patient and keep the receiving team informed.</p>
+    <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-700">Ambulance response</p>
+          <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Emergency command</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-600">Identify the patient and keep the receiving team informed in real time.</p>
+        </div>
+        <LiveStatus connected={connected} />
       </div>
-      <LiveStatus connected={connected} />
     </header>
   )
 }
@@ -183,18 +186,18 @@ export default function Ambulance() {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <PageHeader connected={connected} />
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
       {notice ? (
-        <div role="status" className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900 ring-1 ring-inset ring-emerald-200">
+        <div role="status" className="notice-banner rounded-2xl px-4 py-3 text-sm font-medium text-emerald-900">
           {notice}
         </div>
       ) : null}
 
-      <section className="rounded-2xl bg-slate-900 p-4 text-white sm:p-5">
+      <section className="dashboard-panel rounded-[28px] bg-slate-900 p-4 text-white sm:p-5">
         <div className="flex items-start gap-3">
-          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/10 ring-1 ring-white/10">
             <Icon name="radio" className="h-5 w-5" />
           </div>
           <div className="min-w-0 flex-1">
@@ -203,7 +206,7 @@ export default function Ambulance() {
                 <h2 className="text-base font-bold">Patient identification</h2>
                 <p className="mt-1 text-sm text-slate-300">RFID scan status · demo scanner</p>
               </div>
-              <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-slate-100">
+              <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs font-semibold text-slate-100 ring-1 ring-white/15">
                 Authenticated · {user.name}
               </span>
             </div>
@@ -215,12 +218,12 @@ export default function Ambulance() {
                 onChange={(event) => setUid(event.target.value)}
                 maxLength={64}
                 placeholder="Enter RFID card UID"
-                className="min-h-12 min-w-0 flex-1 rounded-xl border border-white/20 bg-white px-3 py-2 text-sm text-slate-950 placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-2 focus:ring-red-300"
+                className="min-h-12 min-w-0 flex-1 rounded-2xl border border-white/15 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-2 focus:ring-red-300"
               />
               <button
                 type="submit"
                 disabled={!uid.trim() || scanning}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="primary-button inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Icon name="radio" className="h-4 w-4" />
                 {scanning ? 'Reading card…' : 'Simulate RFID scan'}

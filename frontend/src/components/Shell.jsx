@@ -19,18 +19,20 @@ export default function Shell() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="border-b border-slate-200 bg-white">
+    <div className="dashboard-shell min-h-screen">
+      <header className="app-header">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-5 gap-y-3 px-4 py-3 sm:px-6">
-          <span className="text-lg font-bold tracking-tight text-red-700">AYU-LINK</span>
-          <nav aria-label="Primary navigation" className="order-last flex w-full basis-full flex-none gap-1 overflow-x-auto sm:order-none sm:w-auto sm:flex-1 sm:basis-auto">
+          <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-2.5 py-1 text-sm font-black tracking-[0.18em] text-red-700 uppercase">
+            AYU-LINK
+          </span>
+          <nav aria-label="Primary navigation" className="order-last flex w-full basis-full flex-none gap-1 overflow-x-auto rounded-full bg-slate-100/60 p-1 sm:order-none sm:w-auto sm:flex-1 sm:basis-auto">
             {NAV.filter((item) => item.roles.includes(user.role)).map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 ${
-                    isActive ? 'bg-red-50 text-red-800' : 'text-slate-600 hover:bg-slate-100'
+                  `nav-pill shrink-0 rounded-full px-3 py-2 text-sm font-medium ${
+                    isActive ? 'active' : 'text-slate-600 hover:bg-white hover:text-slate-900'
                   }`
                 }
               >
@@ -38,19 +40,19 @@ export default function Shell() {
               </NavLink>
             ))}
           </nav>
-          <div className="ml-auto min-w-0 text-right text-xs leading-tight">
+          <div className="ml-auto min-w-0 rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-right text-xs leading-tight shadow-sm">
             <div className="truncate font-semibold text-slate-800">{user.name}</div>
             <div className="capitalize text-slate-500">{user.role.replaceAll('_', ' ')}</div>
           </div>
           <button
             onClick={signOut}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+            className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
           >
             Sign out
           </button>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-7">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         <Outlet />
       </main>
     </div>

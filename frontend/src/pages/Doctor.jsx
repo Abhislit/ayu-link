@@ -61,19 +61,22 @@ export default function Doctor() {
     String(detail?.case?.id) === String(selectedId) ? detail : null
 
   return (
-    <div className="space-y-5">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">Clinical case overview</h1>
-          <p className="mt-1 text-sm text-slate-600">Read-only view of active emergency cases assigned to your hospital.</p>
+    <div className="space-y-6">
+      <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">Clinical view</p>
+            <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Case overview</h1>
+            <p className="mt-2 max-w-2xl text-sm text-slate-600">Read-only view of active emergency cases assigned to your hospital.</p>
+          </div>
+          <LiveStatus connected={connected} />
         </div>
-        <LiveStatus connected={connected} />
       </header>
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
 
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(17rem,0.72fr)_minmax(0,1.5fr)]">
-        <section className="overflow-hidden rounded-2xl bg-white ring-1 ring-inset ring-slate-200">
-          <header className="border-b border-slate-200 px-4 py-4">
+        <section className="dashboard-panel overflow-hidden rounded-[28px] bg-white/90">
+          <header className="border-b border-slate-200/80 bg-slate-50/80 px-4 py-4">
             <h2 className="font-bold text-slate-950">Hospital cases</h2>
             <p className="mt-1 text-xs text-slate-600">Clinical details are scoped to your hospital.</p>
           </header>
@@ -90,8 +93,8 @@ export default function Doctor() {
                   key={item.id}
                   onClick={() => setSelectedId(item.id)}
                   aria-current={String(selectedId) === String(item.id) ? 'true' : undefined}
-                  className={`w-full px-4 py-4 text-left transition-colors hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-red-600 ${
-                    String(selectedId) === String(item.id) ? 'bg-red-50/70' : ''
+                  className={`queue-item w-full border border-transparent px-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-red-600 ${
+                    String(selectedId) === String(item.id) ? 'bg-red-50/70' : 'bg-white/40'
                   }`}
                 >
                   <span className="flex items-center justify-between gap-3">
