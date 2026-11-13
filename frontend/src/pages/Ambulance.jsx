@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { api } from '../api'
 import { useAuth } from '../auth'
 import CaseMessages from '../components/CaseMessages'
-import { CaseStatus, EmptyCase, PatientOverview } from '../components/CaseOverview'
+import { CaseProgress, CaseStatus, EmptyCase, PatientOverview } from '../components/CaseOverview'
 import Icon from '../components/Icons'
 import { ErrorNotice, LiveStatus, StatusPill } from '../components/StatusPill'
 import useRealtime from '../hooks/useRealtime'
@@ -12,7 +12,7 @@ function PageHeader({ connected }) {
     <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-700">Ambulance response</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary-ink)]">Ambulance response</p>
           <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Emergency command</h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-600">Identify the patient and keep the receiving team informed in real time.</p>
         </div>
@@ -218,7 +218,7 @@ export default function Ambulance() {
                 onChange={(event) => setUid(event.target.value)}
                 maxLength={64}
                 placeholder="Enter RFID card UID"
-                className="min-h-12 min-w-0 flex-1 rounded-2xl border border-white/15 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 focus:border-white focus:outline-none focus:ring-2 focus:ring-red-300"
+                className="min-h-12 min-w-0 flex-1 rounded-2xl border border-white/15 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[#99f6e4]"
               />
               <button
                 type="submit"
@@ -251,6 +251,7 @@ export default function Ambulance() {
                   </div>
                   <StatusPill status={detail.case.priority} label={`${detail.case.priority} priority`} />
                 </div>
+                <div className="mt-4"><CaseProgress detail={detail} /></div>
                 <div className="mt-4"><CaseStatus detail={detail} /></div>
                 <div className="mt-4">
                   <label htmlFor="emergency-category" className="text-sm font-semibold text-slate-800">Emergency category</label>
@@ -259,7 +260,7 @@ export default function Ambulance() {
                     value={detail.case.emergency_category}
                     onChange={updateCategory}
                     disabled={savingCategory}
-                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-100 disabled:opacity-60"
+                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[#ccfbf1] disabled:opacity-60"
                   >
                     <option value="unknown">Not yet classified</option>
                     <option value="trauma">Trauma / accident</option>
@@ -272,7 +273,7 @@ export default function Ambulance() {
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-50 p-3">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wide text-slate-600">Ambulance movement</p>
-                    <p className="mt-1 text-sm font-semibold capitalize text-slate-900">{detail.case.ambulance_status.replaceAll('_', ' ')}</p>
+                    <p className="mt-1 text-sm font-semibold capitalize text-slate-900">{detail.case.ambulance_status?.replaceAll('_', ' ') ?? 'status unavailable'}</p>
                   </div>
                   <button
                     type="button"
@@ -290,7 +291,7 @@ export default function Ambulance() {
                       value={selectedHospital}
                       onChange={(event) => setSelectedHospital(event.target.value)}
                       required
-                      className="min-h-12 min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-100"
+                      className="min-h-12 min-w-0 flex-1 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[#ccfbf1]"
                     >
                       <option value="" disabled>Select a hospital</option>
                       {hospitals.map((hospital) => (

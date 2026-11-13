@@ -201,7 +201,7 @@ export default function CaseMessages({
                   rows={2}
                   maxLength={2000}
                   placeholder="Share a concise update with the care team…"
-                  className="min-h-12 flex-1 resize-y rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-red-600 focus:outline-none focus:ring-2 focus:ring-red-100"
+                  className="min-h-12 flex-1 resize-y rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-500 focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[#ccfbf1]"
                 />
                 <button
                   type="submit"

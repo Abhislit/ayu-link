@@ -10,7 +10,7 @@ from app import realtime
 from app.config import CORS_ORIGINS, ENV
 from app.database import Base, SessionLocal, engine
 from app.routers import admin, auth, cases, doctor, hospital, hospitals, messages, rfid, voice
-from app.seed import seed_demo
+from app.seed import seed_demo, seed_rfid_patients
 
 
 @asynccontextmanager
@@ -35,9 +35,25 @@ async def lifespan(app: FastAPI):
                     "VARCHAR(24) NOT NULL DEFAULT 'unknown'"
                 )
             )
+    patient_columns = {
+        column["name"] for column in inspect(engine).get_columns("patients")
+    }
+    patient_migrations = {
+        "aadhaar": "VARCHAR(16) NOT NULL DEFAULT ''",
+        "phone": "VARCHAR(20) NOT NULL DEFAULT ''",
+        "address": "VARCHAR(255) NOT NULL DEFAULT ''",
+        "emergency_contact": "VARCHAR(160) NOT NULL DEFAULT ''",
+    }
+    with engine.begin() as connection:
+        for name, ddl in patient_migrations.items():
+            if name not in patient_columns:
+                connection.execute(
+                    text(f"ALTER TABLE patients ADD COLUMN {name} {ddl}")
+                )
     if ENV == "dev":
         with SessionLocal() as db:
             seed_demo(db)
+            seed_rfid_patients(db)
     realtime._loop = asyncio.get_running_loop()
     try:
         yield

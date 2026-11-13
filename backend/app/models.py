@@ -53,6 +53,10 @@ class Patient(Base):
     blood_group: Mapped[str] = mapped_column(String(8), default="")
     conditions: Mapped[str] = mapped_column(Text, default="")
     allergies: Mapped[str] = mapped_column(Text, default="")
+    aadhaar: Mapped[str] = mapped_column(String(16), default="")
+    phone: Mapped[str] = mapped_column(String(20), default="")
+    address: Mapped[str] = mapped_column(String(255), default="")
+    emergency_contact: Mapped[str] = mapped_column(String(160), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=now)
 
     records: Mapped[list["MedicalRecord"]] = relationship(back_populates="patient")

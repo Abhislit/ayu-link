@@ -32,6 +32,27 @@ export function PatientOverview({ detail, compact = false }) {
         </div>
       </div>
 
+      {patient.aadhaar || patient.phone || patient.emergency_contact || patient.address ? (
+        <div className="mt-3 grid gap-3 rounded-xl bg-slate-50 p-3 sm:grid-cols-2">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Aadhaar</p>
+            <p className="mt-1 text-sm font-medium text-slate-900">{patient.aadhaar || 'Not recorded'}</p>
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Phone</p>
+            <p className="mt-1 text-sm font-medium text-slate-900">{patient.phone || 'Not recorded'}</p>
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Emergency contact</p>
+            <p className="mt-1 text-sm font-medium text-slate-900">{patient.emergency_contact || 'Not recorded'}</p>
+          </div>
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Address</p>
+            <p className="mt-1 text-sm font-medium text-slate-900">{patient.address || 'Not recorded'}</p>
+          </div>
+        </div>
+      ) : null}
+
       {!compact ? (
         <div className="mt-4 border-t border-slate-200 pt-3">
           <h3 className="text-sm font-semibold text-slate-900">Available medical history</h3>
@@ -65,6 +86,41 @@ export function CaseStatus({ detail }) {
         label={`Ambulance ${detail.case.ambulance_status?.replaceAll('_', ' ') ?? 'status unavailable'}`}
       />
       {detail.case.prep_status ? <StatusPill status={detail.case.prep_status} label={`Hospital ${detail.case.prep_status}`} /> : null}
+    </div>
+  )
+}
+
+const PROGRESS_STEPS = [
+  ['open', 'Identified'],
+  ['hospital_selected', 'Hospital'],
+  ['acknowledged', 'Acknowledged'],
+  ['closed', 'Closed'],
+]
+
+export function CaseProgress({ detail }) {
+  const status = detail?.case?.status
+  if (!status) return null
+  const current = Math.max(0, PROGRESS_STEPS.findIndex(([key]) => key === status))
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-600">Handoff progress</p>
+      <ol className="mt-2 grid grid-cols-4 gap-2">
+        {PROGRESS_STEPS.map(([key, label], index) => {
+          const state = index < current ? 'done' : index === current ? 'current' : 'future'
+          return (
+            <li key={key} aria-current={index === current ? 'step' : undefined}>
+              <span
+                className={`block h-1.5 rounded-full ${
+                  state === 'done' ? 'bg-emerald-500' : state === 'current' ? 'bg-[var(--primary)]' : 'bg-slate-200'
+                }`}
+              />
+              <span className={`mt-1.5 block text-[10px] font-semibold leading-tight sm:text-xs ${state === 'future' ? 'text-slate-500' : 'text-slate-800'}`}>
+                {label}
+              </span>
+            </li>
+          )
+        })}
+      </ol>
     </div>
   )
 }

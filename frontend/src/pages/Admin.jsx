@@ -52,7 +52,7 @@ export default function Admin() {
       <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-700">Administration</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary-ink)]">Administration</p>
             <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Platform overview</h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-600">View demo directory and platform totals. Clinical records are not shown here.</p>
           </div>
@@ -100,8 +100,8 @@ export default function Admin() {
                 role="tab"
                 aria-selected={activeSection === section.key}
                 onClick={() => setActiveSection(section.key)}
-                className={`shrink-0 rounded-t-xl px-3 py-2 text-sm font-semibold capitalize transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-red-600 ${
-                  activeSection === section.key ? 'bg-red-50 text-red-800 ring-1 ring-inset ring-red-200' : 'text-slate-600 hover:bg-slate-100'
+                className={`shrink-0 rounded-t-xl px-3 py-2 text-sm font-semibold capitalize transition-colors ${
+                  activeSection === section.key ? 'bg-[var(--primary-soft)] text-[var(--primary-ink)] ring-1 ring-inset ring-[#99f6e4]' : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 {section.label}
@@ -121,7 +121,9 @@ export default function Admin() {
               {rows.map((row) => (
                 <tr key={row.id} className="text-slate-800">
                   <td className="px-4 py-3 font-semibold tabular-nums text-slate-700 sm:px-5">{row.id}</td>
-                  {active.columns.map(([key]) => <td key={key} className="px-4 py-3 capitalize sm:px-5">{valueFor(row, key)}</td>)}
+                  {active.columns.map(([key]) => (
+                    <td key={key} className={`px-4 py-3 sm:px-5 ${key === 'role' || key === 'sex' ? 'capitalize' : ''}`}>{valueFor(row, key)}</td>
+                  ))}
                 </tr>
               ))}
               {!loading && rows.length === 0 ? (

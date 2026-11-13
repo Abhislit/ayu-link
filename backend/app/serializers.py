@@ -35,6 +35,10 @@ def patient_public(patient: Patient) -> dict:
         "blood_group": patient.blood_group,
         "conditions": patient.conditions,
         "allergies": patient.allergies,
+        "aadhaar": patient.aadhaar,
+        "phone": patient.phone,
+        "address": patient.address,
+        "emergency_contact": patient.emergency_contact,
     }
 
 

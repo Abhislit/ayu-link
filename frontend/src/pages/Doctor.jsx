@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { api } from '../api'
 import { useAuth } from '../auth'
 import CaseMessages from '../components/CaseMessages'
-import { CaseStatus, EmptyCase, PatientOverview } from '../components/CaseOverview'
+import CaseQueue from '../components/CaseQueue'
+import { CaseProgress, CaseStatus, EmptyCase, PatientOverview } from '../components/CaseOverview'
 import Icon from '../components/Icons'
-import { ErrorNotice, LiveStatus, StatusPill } from '../components/StatusPill'
+import { ErrorNotice, LiveStatus } from '../components/StatusPill'
 import useRealtime from '../hooks/useRealtime'
 
 export default function Doctor() {
@@ -13,6 +14,7 @@ export default function Doctor() {
   const [detail, setDetail] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [detailLoading, setDetailLoading] = useState(false)
   const [error, setError] = useState('')
 
   const loadCases = useCallback(async () => {
@@ -33,10 +35,13 @@ export default function Doctor() {
       setDetail(null)
       return
     }
+    setDetailLoading(true)
     try {
       setDetail(await api(`/api/cases/${caseId}`))
     } catch (reason) {
       setError(reason.message || 'Case details could not be loaded.')
+    } finally {
+      setDetailLoading(false)
     }
   }, [])
 
@@ -65,7 +70,7 @@ export default function Doctor() {
       <header className="dashboard-hero rounded-[28px] p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">Clinical view</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--primary-ink)]">Clinical view</p>
             <h1 className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">Case overview</h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-600">Read-only view of active emergency cases assigned to your hospital.</p>
           </div>
@@ -75,48 +80,22 @@ export default function Doctor() {
       {error ? <ErrorNotice onDismiss={() => setError('')}>{error}</ErrorNotice> : null}
 
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(17rem,0.72fr)_minmax(0,1.5fr)]">
-        <section className="dashboard-panel overflow-hidden rounded-[28px] bg-white/90">
-          <header className="border-b border-slate-200/80 bg-slate-50/80 px-4 py-4">
-            <h2 className="font-bold text-slate-950">Hospital cases</h2>
-            <p className="mt-1 text-xs text-slate-600">Clinical details are scoped to your hospital.</p>
-          </header>
-          {loading ? (
-            <div className="space-y-2 p-4" aria-label="Loading cases">
-              <div className="h-16 animate-pulse rounded-lg bg-slate-200" />
-              <div className="h-16 animate-pulse rounded-lg bg-slate-200" />
-            </div>
-          ) : cases.length ? (
-            <div className="divide-y divide-slate-100">
-              {cases.map((item) => (
-                <button
-                  type="button"
-                  key={item.id}
-                  onClick={() => setSelectedId(item.id)}
-                  aria-current={String(selectedId) === String(item.id) ? 'true' : undefined}
-                  className={`queue-item w-full border border-transparent px-4 py-4 text-left focus-visible:outline-2 focus-visible:outline-inset focus-visible:outline-red-600 ${
-                    String(selectedId) === String(item.id) ? 'bg-red-50/70' : 'bg-white/40'
-                  }`}
-                >
-                  <span className="flex items-center justify-between gap-3">
-                    <span>
-                      <span className="block text-sm font-bold text-slate-950">{item.patient?.name ?? 'Patient'} · Case #{item.id}</span>
-                      <span className="mt-1 block text-xs text-slate-600">Ambulance #{item.ambulance_id}</span>
-                    </span>
-                    <Icon name="chevron" className="h-4 w-4 shrink-0 text-slate-400" />
-                  </span>
-                  <span className="mt-3 flex flex-wrap gap-2">
-                    <StatusPill status={item.priority} label={`${item.priority} priority`} />
-                    <StatusPill status={item.status} />
-                  </span>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="px-4 py-8 text-center text-sm text-slate-600">No cases assigned to this hospital.</div>
-          )}
-        </section>
+        <CaseQueue
+          title="Hospital cases"
+          subtitle="Clinical details are scoped to your hospital."
+          cases={cases}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          loading={loading}
+          emptyTitle="No cases assigned to this hospital"
+        />
 
-        {selectedDetail ? (
+        {detailLoading ? (
+          <div className="space-y-4" aria-label="Loading selected case">
+            <div className="h-40 animate-pulse rounded-2xl bg-slate-200" />
+            <div className="h-80 animate-pulse rounded-2xl bg-slate-200" />
+          </div>
+        ) : selectedDetail ? (
           <div className="space-y-4">
             <section className="rounded-2xl bg-white p-4 ring-1 ring-inset ring-slate-200 sm:p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
@@ -126,6 +105,7 @@ export default function Doctor() {
                 </div>
                 <Icon name="shield" className="h-6 w-6 text-slate-500" />
               </div>
+              <div className="mt-4"><CaseProgress detail={selectedDetail} /></div>
               <div className="mt-3"><CaseStatus detail={selectedDetail} /></div>
             </section>
             <PatientOverview detail={selectedDetail} />

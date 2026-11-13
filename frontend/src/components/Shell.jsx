@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth'
+import Icon from './Icons'
 import { ADMIN_ROLES, AMBULANCE_ROLES, DOCTOR_ROLES, HOSPITAL_ROLES } from '../roleRoutes'
 
 const NAV = [
@@ -19,40 +20,51 @@ export default function Shell() {
   }
 
   return (
-    <div className="dashboard-shell min-h-screen">
-      <header className="app-header">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-5 gap-y-3 px-4 py-3 sm:px-6">
-          <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-2.5 py-1 text-sm font-black tracking-[0.18em] text-red-700 uppercase">
-            AYU-LINK
+    <div className="flex min-h-screen flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+      <aside className="flex flex-wrap items-center gap-3 border-b border-[var(--line)] bg-[var(--surface)] px-4 py-3 lg:sticky lg:top-0 lg:h-screen lg:flex-col lg:flex-nowrap lg:items-stretch lg:border-r lg:border-b-0 lg:px-4 lg:py-6">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--primary)] text-white">
+            <Icon name="activity" />
           </span>
-          <nav aria-label="Primary navigation" className="order-last flex w-full basis-full flex-none gap-1 overflow-x-auto rounded-full bg-slate-100/60 p-1 sm:order-none sm:w-auto sm:flex-1 sm:basis-auto">
-            {NAV.filter((item) => item.roles.includes(user.role)).map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `nav-pill shrink-0 rounded-full px-3 py-2 text-sm font-medium ${
-                    isActive ? 'active' : 'text-slate-600 hover:bg-white hover:text-slate-900'
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="ml-auto min-w-0 rounded-full border border-slate-200 bg-white/80 px-3 py-2 text-right text-xs leading-tight shadow-sm">
-            <div className="truncate font-semibold text-slate-800">{user.name}</div>
-            <div className="capitalize text-slate-500">{user.role.replaceAll('_', ' ')}</div>
+          <div className="min-w-0 leading-tight">
+            <div className="text-sm font-black tracking-[0.18em] uppercase">AYU-LINK</div>
+            <div className="truncate text-xs text-[var(--muted)]">Emergency coordination</div>
           </div>
-          <button
-            onClick={signOut}
-            className="rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-          >
-            Sign out
-          </button>
         </div>
-      </header>
-      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+
+        <nav
+          aria-label="Primary navigation"
+          className="order-last -mx-1 flex w-full gap-1 overflow-x-auto px-1 lg:order-none lg:mx-0 lg:mt-8 lg:w-auto lg:flex-col lg:overflow-visible lg:px-0"
+        >
+          {NAV.filter((item) => item.roles.includes(user.role)).map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `nav-pill shrink-0 px-3 py-2 text-sm font-medium lg:w-full ${isActive ? 'active' : ''}`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="hidden lg:mt-auto lg:block">
+          <div className="rounded-xl bg-[var(--surface-muted)] px-3 py-2 text-xs leading-tight">
+            <div className="truncate font-semibold">{user.name}</div>
+            <div className="capitalize text-[var(--muted)]">{user.role.replaceAll('_', ' ')}</div>
+          </div>
+        </div>
+
+        <button
+          onClick={signOut}
+          className="ml-auto shrink-0 rounded-lg border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm font-semibold text-[var(--ink)] transition-colors hover:bg-[var(--surface-muted)] lg:ml-0 lg:w-full"
+        >
+          Sign out
+        </button>
+      </aside>
+
+      <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
         <Outlet />
       </main>
     </div>
